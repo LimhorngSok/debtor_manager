@@ -1,0 +1,62 @@
+{% extends 'layouts/master.html'%}
+{%block title%}Create Green Transaction{%endblock title%}
+{% block style%}
+<style>
+    .card{
+        box-shadow: 0px 5px 10px -5px!important;
+        border-radius: 5px !important;
+    }
+    input{
+        padding: 30px !important;
+        margin-bottom: 30px !important;
+        border-right: none !important;
+    }
+    input::placeholder{
+        color: #6c757d !important;
+    }
+    .input-group-text{
+        /* padding: 30px !important; */
+        margin-bottom: 30px !important;
+        background-color: white !important;
+        border-left: none !important;
+    }
+    .button-pay{
+        background-color: #0A05FF!important;
+        color: white!important;
+    }
+</style>
+{% endblock style%}
+{% block context%}
+<button class="btn btn-danger position-fixed" style="bottom: 10px; left: 10px" onclick="location.href='/search'">Back</button>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="card col-8 pl-5 pr-5 pb-3 pt-3 mt-5">
+                <div class="card-body">
+                    <div class="row justify-content-between">
+                        <div class="left-side">
+                            <h6 class="text-muted"><strong>Name:</strong> Canada</h6>
+                            <h6 class="text-muted"><strong>Location:</strong> Cambodia Kindom</h6>
+                            <h6 class="text-muted"><strong>Phone:</strong> +855 14 312 3233</h6>
+                        </div>
+                        <div class="right-side">
+                            <h6 class="text-muted"><strong>Date:</strong> 12 May 2020</h6>
+                        </div>
+                    </div>
+                    <form method='POST' action='{% url "transaction.green.save" user%}'>
+                        {%csrf_token%}
+                        <div class="input-group col-12 mt-5">
+                          <input type="text" class="form-control p-4" name='amount'  placeholder="Amount">
+                          <div class="input-group-append">
+                            <span class="input-group-text text-muted" id="basic-addon2">$</span>
+                          </div>
+                        </div>
+                        <div class="text-left justify-content-center row pr-3">
+                            <button type="submit" class="btn button-pay pl-5 pr-5 pt-1 pb-1 col-8">Pay</button>
+                        </div>
+                        
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{%endblock context%}

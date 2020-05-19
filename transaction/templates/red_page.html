@@ -1,0 +1,179 @@
+{% extends 'layouts/master.html'%}
+{%block title%}Create Red Transaction{%endblock title%}
+{% block style%}
+<style>
+    .card:not(.table-section){
+        box-shadow: 0px 5px 10px -5px!important;
+        border-radius: 5px !important;
+    }
+    .card.table-section{
+        padding: 0px !important;
+    }
+    input{
+        border-left: none!important;
+        border-right: none!important;
+        border-top: none!important;
+        border-bottom: 1px dashed #909090;
+        margin-bottom: 5px;
+    }
+    input::placeholder{
+        color: #6c757d !important;
+    }
+    .btn-add-row{
+        background-color: #0A05FF!important;
+        color: white!important;
+    }
+    .btn-save{
+        background-color: #FF0000!important;
+        color: white!important;
+    }
+    .table{
+        border: 1px solid #dee2e6 !important;
+        border-radius: 1em !important;
+        margin-bottom: 0px !important;
+    }
+    
+</style>
+{% endblock style%}
+{% block context%}
+    <button class="btn btn-danger position-fixed" style="bottom: 10px; left: 10px" onclick="location.href='/search'">Back</button>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="card col-8 pl-5 pr-5 pb-3 pt-3 mt-5">
+                <div class="card-body">
+                    <div class="row justify-content-between">
+                        <div class="left-side">
+                            <h6 class="text-muted"><strong>Name:</strong> Canada</h6>
+                            <h6 class="text-muted"><strong>Location:</strong> Cambodia Kindom</h6>
+                            <h6 class="text-muted"><strong>Phone:</strong> +855 14 312 3233</h6>
+                        </div>
+                        <div class="right-side">
+                            <h6 class="text-muted"><strong>Date:</strong> {% now "SHORT_DATETIME_FORMAT" %}</h6>
+                        </div>
+                    </div>
+                    <div class="table-section card col-12 mt-5 rounded">
+                        <table class="table table-bordered col-12 text-muted">
+                            <thead>
+                                <tr>
+                                    <th>Item</th>
+                                    <th>Unit Price</th>
+                                    <th>Qty</th>
+                                    <th width=25%>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><input type="text" class="input-table col" name="item"></td>
+                                    <td><input type="number" min="0" value="0" class="input-table col" name="unit-price"></td>
+                                    <td><input type="number" min="1" value="1" class="input-table col" name="qty"></td>
+                                    <td><strong class="total-price" data-price="0">$ 0</strong></td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th colspan="3" class="text-end">Total</th>
+                                    <th><strong id="total">$ 0</strong></th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                    <div class="btn-section mt-5">
+                        <button class="btn btn-save col-12 mt-3">Save</button>
+                        <button class="btn btn-add-row col-12 mt-3">Add Row</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {%endblock context%}
+{%block script%}
+<script>
+    function updateRow(row){
+        var itemName = $(row).find('input[name=item').val();
+        var uprice = $(row).find('input[name=unit-price]').val();
+        var qty = $(row).find('input[name="qty"]').val();
+        if ($.isNumeric(uprice) && $.isNumeric(qty) && Number(qty)>=0 && Number(uprice)>=0){
+            $(row).find(".total-price").text('$ '+calc(uprice,qty));
+            $(row).find(".total-price").data('price',calc(uprice,qty));
+        }else{
+            $(row).find(".total-price").text('$ 0');
+            uprice = 0;
+            qty = 0;
+            $(row).find(".total-price").data('price','0');
+        }
+
+
+        if(!itemName){
+            itemName = "Unknown";
+        }
+
+        var item = {
+            'name':itemName,
+            'unit-price':uprice,
+            'qty': qty
+        };
+        return item;
+    }
+    $(document).ready(function(){
+        updateTotalPrice();
+    })
+    function updateTotalPrice(){
+        var totalPrice = 0;
+        obj = {
+            'items':[],
+            'user': {{user}}
+        };
+        $(".table tbody tr").each(function(){
+            var item = updateRow(this);
+            totalPrice += Number(item['unit-price'])*Number(item['qty']);
+            obj['items'].push(item);
+        })
+        
+        $('#total').text('$ '+Number(totalPrice));
+        $('#total').data('price',Number(totalPrice));
+        console.log(obj);
+    }
+    function calc(uprice,qty){
+
+        return uprice*qty;
+    }
+    
+    $(document).on('change','.table tbody tr input',function(){
+        
+        updateTotalPrice();
+    })
+    $('.btn-section .btn-add-row').on('click',function(){
+        var TableRow = 
+        '<tr>'                         
+            +'<td><input type="text" class="input-table col" name="item"></td>'
+            +'<td><input type="number" min="0" value="0" class="input-table col" name="unit-price"></td>'
+            +'<td><input type="number" min="1" value="1" class="input-table col" name="qty"></td>'
+            +'<td><strong class="total-price" data-price="0">$ 0</strong></td>'
+        +'</tr>';
+        $('.table-section table tbody').append(TableRow);
+        updateTotalPrice();
+    })
+    $('.btn-save').on('click',function(){
+        $.ajax({
+            url: '{% url "transaction.red.save" user %}',
+            method: 'POST',
+            headers: {'X-CSRFToken':'{{csrf_token}}'},
+            dataType: 'json',
+            data: {data: JSON.stringify(obj)},
+            success: function(data){
+                var TableRow = 
+                            '<tr>'                         
+                                +'<td><input type="text" class="input-table col" name="item"></td>'
+                                +'<td><input type="number" min="0" value="0" class="input-table col" name="unit-price"></td>'
+                                +'<td><input type="number" min="1" value="1" class="input-table col" name="qty"></td>'
+                                +'<td><strong class="total-price" data-price="0">$ 0</strong></td>'
+                            +'</tr>';
+               $('.card-body').prepend('<div class="alert alert-success">'+data.msg+'</div>')
+               $('table tbody').html(TableRow);
+            }
+        })
+    })
+
+</script>
+{%endblock script%}
+</html>

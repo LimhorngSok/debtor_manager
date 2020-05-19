@@ -1,0 +1,55 @@
+{% extends 'layouts/master.html'%}
+{%block title%}Create New Purchaser{%endblock title%}
+{% block style%}
+<style>
+    .card{
+        box-shadow: 0px 5px 10px -5px!important;
+        border-radius: 5px !important;
+    }
+    input{
+        padding: 30px !important;
+        margin-bottom: 30px !important;
+    }
+</style>
+{% endblock style%}
+{% block context%}
+<button class="btn btn-danger position-fixed" style="bottom: 10px; left: 10px" onclick="location.href='/'">Back</button>
+    <div class="container p-5">
+        
+        <div class="row justify-content-center mt-5">
+            <div class="col-6">
+                <h1 class="font-weight-bold mb-5">New Purchaser</h1>
+                <div class="card col-12 mt-3 p-3">
+                    
+                    <div class="card-body p-5">
+                        <form method='POST' action="{% url 'purchaser.save'%}">
+                            {% if messages%}
+                                {% for message in messages %}
+                                <div class="alert alert-success" role="alert">
+                                    {{message}}
+                                </div>
+                                {% endfor %}
+                            {% endif%}
+                            {% csrf_token %}
+                            <div class="form-group">
+                              <input type="text" class="form-control" name='name'  placeholder="Fullname">
+                            </div>  
+                            <div class="form-group">
+                                <input type="text" class="form-control" name='phone' placeholder="Phone Number">
+                            </div>
+                            <div class="form-group">
+                                <input type="text" class="form-control" name='address' placeholder="Address">
+                            </div>
+                            <div class="text-left justify-content-end row pr-3">
+                                <button type="submit" class="btn btn-primary pl-5 pr-5">Add</button>
+                            </div>
+                            
+                        </form>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+        
+    </div>
+{%endblock context%}

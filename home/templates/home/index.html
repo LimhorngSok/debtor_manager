@@ -1,0 +1,27 @@
+{% extends 'layouts/master.html'%}
+{%block title%}Deptor Management{%endblock title%}
+{% block style%}
+<style>
+    .col:hover{
+        filter: brightness(90%);
+        cursor: pointer;
+    }
+    .vertical-center{
+        min-height: 100%;  /* Fallback for browsers do NOT support vh unit */
+        min-height: 100vh; /* These two lines are counted as one :-)       */
+
+        display: flex;
+        align-items: center;
+    }
+</style>
+{% endblock style%}
+{% block context%}
+    <div class="position-absolute w-100 h-100 m-0 row text-white">
+        <div class="col bg-danger h-100 text-center vertical-center justify-content-center" onclick="location.href='/search'">
+            <h1 class="align-middle ">Search</h1>
+        </div>
+        <div class="col bg-primary h-100 text-center vertical-center justify-content-center" onclick="location.href='/purchaser/create'">
+            <h1>Create</h1>
+        </div>
+    </div>
+{%endblock context%}
