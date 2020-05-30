@@ -43,9 +43,9 @@
                 <div class="card-body">
                     <div class="row justify-content-between">
                         <div class="left-side">
-                            <h6 class="text-muted"><strong>Name:</strong> Canada</h6>
-                            <h6 class="text-muted"><strong>Location:</strong> Cambodia Kindom</h6>
-                            <h6 class="text-muted"><strong>Phone:</strong> +855 14 312 3233</h6>
+                            <h6 class="text-muted"><strong>Name:</strong> {{ user.name }}</h6>
+                            <h6 class="text-muted"><strong>Location:</strong> {{ user.address.name }}</h6>
+                            <h6 class="text-muted"><strong>Phone:</strong> {{user.phone }}</h6>
                         </div>
                         <div class="right-side">
                             <h6 class="text-muted"><strong>Date:</strong> {% now "SHORT_DATETIME_FORMAT" %}</h6>
@@ -155,7 +155,7 @@
     })
     $('.btn-save').on('click',function(){
         $.ajax({
-            url: '{% url "transaction.red.save" user %}',
+            url: '{% url "transaction.red.save" user.id %}',
             method: 'POST',
             headers: {'X-CSRFToken':'{{csrf_token}}'},
             dataType: 'json',

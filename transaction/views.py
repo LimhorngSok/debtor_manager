@@ -7,7 +7,10 @@ from .models import *
 from django.forms.models import model_to_dict
 # Create your views here.
 def createRed(request,user):
-    return render(request,'red_page.html',{'user':user})
+    context = {
+        'user': Purchaser.objects.get(pk = user)
+    }
+    return render(request,'red_page.html',context)
 def saveRed(request,user):
     if request.method == "POST":
         data = request.POST['data']
@@ -39,7 +42,10 @@ def viewRed(request,user,id):
         return JsonResponse({'status':500,'msg':'There was an unexpected error, please try again later!'})
     
 def createGreen(request,user):
-    return render(request,'green_page.html',{'user':user})
+    context = {
+        'user': Purchaser.objects.get(pk = user)
+    }
+    return render(request,'green_page.html',context)
 def saveGreen(request,user):
     if request.method == "POST":
         purchaser = Purchaser.objects.get(pk = user)
