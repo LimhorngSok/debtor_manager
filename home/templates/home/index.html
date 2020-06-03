@@ -16,12 +16,15 @@
 </style>
 {% endblock style%}
 {% block context%}
+    {% load static %}
     <div class="position-absolute w-100 h-100 m-0 row text-white">
         <div class="col bg-danger h-100 text-center vertical-center justify-content-center" onclick="location.href='/search'">
-            <h1 class="align-middle ">Search</h1>
+            <img src="{% static 'home/assets/search.png' %}" width="200px" style="filter: opacity(0.5) ;" alt=""/>
+            <!-- <h1 class="align-middle ">Search</h1> -->
         </div>
         <div class="col bg-primary h-100 text-center vertical-center justify-content-center" onclick="location.href='/purchaser/create'">
-            <h1>Create</h1>
+            <img src="{% static 'home/assets/add.png' %}" style="filter: opacity(0.5) ;" width="200px" alt="">
+            <!-- <h1>Create</h1> -->
         </div>
     </div>
 {%endblock context%}
